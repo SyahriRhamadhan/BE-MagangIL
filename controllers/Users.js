@@ -7,7 +7,7 @@ import fs from "fs";
 export const getRoot = async(req, res) => {
   res.status(200).json({
     status: "OK",
-    message: "FlightGo API is up and running!",
+    message: " API is up and running!",
   });
 }
 // Menampilkan semua data user dan hanya admin saja yang bisa mengakses
@@ -86,6 +86,7 @@ export const Login = async(req, res) => {
         const userId = user[0].id;
         const name = user[0].name;
         const email = user[0].email;
+        const role = user[0].role;
         const phone = user[0].phone;
         const address = user[0].address;
         const image_user = user[0].image_user;
@@ -97,11 +98,11 @@ export const Login = async(req, res) => {
         const program_studi = user[0].program_studi;
         const jenjang = user[0].jenjang;
         // untuk membuat accses token
-        const accessToken = jwt.sign({userId, name, email, role, phone, address, image_user, visa, passport,izinuserId, name, email, phone, address, image_user, kampus, jenis_kelamin, tgl_lahir, tempat_lahir, agama, program_studi,  jenjang}, process.env.ACCESS_TOKEN_SECRET,{
+        const accessToken = jwt.sign({userId, name, email, role, phone, address, image_user, kampus, jenis_kelamin, tgl_lahir, tempat_lahir, agama, program_studi,  jenjang}, process.env.ACCESS_TOKEN_SECRET,{
             expiresIn: '1d'
         });
          // untuk membuat refresh token
-        const refreshToken = jwt.sign({userId, name, email, phone, address, image_user, kampus, jenis_kelamin, tgl_lahir, tempat_lahir, agama, program_studi,  jenjang}, process.env.REFRESH_TOKEN_SECRET,{
+        const refreshToken = jwt.sign({userId, name, email, role, phone, address, image_user, kampus, jenis_kelamin, tgl_lahir, tempat_lahir, agama, program_studi,  jenjang}, process.env.REFRESH_TOKEN_SECRET,{
             expiresIn: '183d'
         });
         await Users.update({refresh_token: refreshToken},{ // mengupdate refresh token saat update
@@ -165,7 +166,7 @@ export const Update = async(req, res,next) => {
         id: req.user.userId
     }
   });
-  const {name, phone, address} = req.body; // Atribut untuk input user
+  const {name, phone, address, kampus, jenis_kelamin, tempat_lahir, tgl_lahir, agama, program_studi, jenjang} = req.body; // Atribut untuk input user
   // Untuk menyimpan file yang diunggah
   let fileName = "";
 
@@ -189,7 +190,7 @@ export const Update = async(req, res,next) => {
     if(!allowedType.includes(ext.toLowerCase())) return res.status(422).json({message: "Invalid Images"});
     
     // Mengecek ukuran file yang diunggah, memastikan ukuran file kurang dari 1 MB.
-    if(fileSize > 1000000 || fileSizeVisa > 1000000 || fileSizePassport > 1000000 || fileSizeIzin > 1000000) return res.status(422).json({message: "Image must be less than 1 MB"});
+    if(fileSize > 1000000 ) return res.status(422).json({message: "Image must be less than 1 MB"});
     // Memindahkan file ke direktori yang sesuai dan error handling
     file.mv(`./public/images/${fileName}`, (err)=>{
         if(err) return res.status(500).json({message: err.message});
@@ -205,6 +206,13 @@ export const Update = async(req, res,next) => {
       phone: phone,
       address: address,
       image_user: url,
+      kampus: kampus,
+      jenis_kelamin: jenis_kelamin,
+      tempat_lahir: tempat_lahir,
+      tgl_lahir: tgl_lahir,
+      agama: agama,
+      program_studi: program_studi,
+      jenjang: jenjang
   },{
       where:{
           id: users.id

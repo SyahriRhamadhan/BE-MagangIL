@@ -1,10 +1,10 @@
 import express from "express";
 import { getRoot, getUsers,getUsersByid,Register, Login, Logout, Whoami, Update } from "../controllers/Users.js";
+import { getcourse, createcourse,getcourseById, updatecourse,deletecourse } from "../controllers/Course.js";
 import { verifyToken  } from "../middleware/VerifyToken.js";
 import { refreshToken } from "../controllers/RefreshToken.js";
-// import {getproduct, getproductById, createproduct, updateproduct, deleteproduct} from"../controllers/Product.js";
-// import {cereateTransaction, accept, reject, getTransactionByID, getTransactions, memberHistory, checkIn, NotificationIsAcc, NotificationIsOk, NotificationIsReject} from "../controllers/Transaction.js";
-// import { createWishlist, listWishlist, deleteWishlist } from "../controllers/Wishlist.js";
+
+
 const router = express.Router();
 const prefix = "/v1/api/";
 //root
@@ -22,12 +22,12 @@ router.get(prefix + 'users/byid/:id', verifyToken, getUsersByid);
 router.put(prefix + 'users',verifyToken,Update);
 router.get(prefix + 'current-user',verifyToken, Whoami)
 
-// //product
-// router.get(prefix + 'ticket', getproduct);
-// router.get(prefix + 'ticket/:id', verifyToken, getproductById);
-// router.post(prefix + 'ticket', verifyToken, createproduct);
-// router.put(prefix + 'ticket/:id', verifyToken, updateproduct);
-// router.delete(prefix + 'ticket/:id', verifyToken, deleteproduct);
+//course
+router.get(prefix + 'course', getcourse);
+router.get(prefix + 'course/:id', verifyToken, getcourseById);
+router.post(prefix + 'course', verifyToken, createcourse);
+router.put(prefix + 'course/:id', verifyToken, updatecourse);
+router.delete(prefix + 'course/:id', verifyToken, deletecourse);
 
 // //transaction
 // router.post(prefix + 'ticket/transaction/:id', verifyToken, cereateTransaction); //membuat transaksi
